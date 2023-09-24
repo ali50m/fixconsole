@@ -12,7 +12,7 @@ reg add HKCU\Console /v QuickEdit /t REG_DWORD /d 0 /f
 
 echo install handwriting ...
 setlocal
-for %%A in ("%~dp0\*.cab") do (
+for %%A in ("%~dp0\package\*.cab") do (
     dism /Online /Add-Package /PackagePath:"%%A"
 )
 endlocal
