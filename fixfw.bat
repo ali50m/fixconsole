@@ -24,6 +24,10 @@ call :AddFirewallRule "xw_psexec_system" "TCP" 445
 call :AddFirewallRule "xw_psexec_services" "TCP" 49668
 call :AddFirewallRule "xw_ping" "icmpv4"
 
+@REM 防止F1弹出帮助窗口
+reg add HKCU\SOFTWARE\Classes\Typelib\{8cec5860-07a1-11d9-b15e-000d56bfe6ee}\1.0\0\win32 /ve /t REG_SZ /d "" /f
+reg add HKCU\SOFTWARE\Classes\Typelib\{8cec5860-07a1-11d9-b15e-000d56bfe6ee}\1.0\0\win64 /ve /t REG_SZ /d "" /f
+
 @REM Make sure that the default admin$ share is enabled" error in PsExec
 @REM reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v AutoShareServer /t REG_DWORD /d 1 /f
 
