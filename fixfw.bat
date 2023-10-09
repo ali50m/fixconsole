@@ -66,6 +66,16 @@ IF %ERRORLEVEL% EQU 0 (
 netsh advfirewall firewall show rule name="xw_xcopy"
 echo add xw_xcopy firewall rule success!
 
+REM 允许ICMP Echo Request通过防火墙
+netsh advfirewall firewall show rule name="xw_ping" | findstr "xw_ping" >nul
+IF %ERRORLEVEL% EQU 0 (
+    netsh advfirewall firewall set rule name="xw_ping" new enable=yes
+) ELSE (
+    netsh advfirewall firewall add rule name="xw_ping" dir=in action=allow protocol=icmpv4
+)
+netsh advfirewall firewall show rule name="xw_ping"
+echo add xw_ping firewall rule success!
+
 echo press any key to exit...
 pause >nul
 exit
