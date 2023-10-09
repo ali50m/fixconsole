@@ -14,16 +14,6 @@ IF %ERRORLEVEL% EQU 0 (
 
 :continue
 
-@REM 允许ICMP Echo Request通过防火墙
-netsh advfirewall firewall show rule name="xw_ping" | findstr "xw_ping" >nul
-IF %ERRORLEVEL% EQU 0 (
-    netsh advfirewall firewall set rule name="xw_ping" new enable=yes
-) ELSE (
-    netsh advfirewall firewall add rule name="xw_ping" dir=in action=allow protocol=icmpv4
-)
-netsh advfirewall firewall show rule name="xw_ping"
-echo add xw_ping firewall rule success!
-
 call :AddFirewallRule "xw_RDPA" "TCP" 3389
 call :AddFirewallRule "xw_TwinCAT_TCP" "TCP" 48898
 call :AddFirewallRule "xw_TwinCAT_UDP" "UDP" 48898
@@ -32,6 +22,13 @@ call :AddFirewallRule "xw_xcopy" "TCP" 445
 call :AddFirewallRule "xw_psexec_rpc" "TCP" 135
 call :AddFirewallRule "xw_psexec_system" "TCP" 445
 call :AddFirewallRule "xw_psexec_services" "TCP" 49668
+call :AddFirewallRule "xw_ping" "icmpv4"
+
+@REM Make sure that the default admin$ share is enabled" error in PsExec
+@REM reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v AutoShareServer /t REG_DWORD /d 1 /f
+
+echo press any key to exit...
+pause >nul
 exit /b
 
 :AddFirewallRule
@@ -44,15 +41,12 @@ netsh advfirewall firewall show rule name="%ruleName%" | findstr "%ruleName%" >n
 IF %ERRORLEVEL% EQU 0 (
     netsh advfirewall firewall set rule name="%ruleName%" new enable=yes
 ) ELSE (
-    netsh advfirewall firewall add rule name="%ruleName%" dir=in action=allow protocol=%protocol% localport=%localPort%
+    if "%localPort%"=="" (
+        netsh advfirewall firewall add rule name="%ruleName%" dir=in action=allow protocol=%protocol%
+    ) else (
+        netsh advfirewall firewall add rule name="%ruleName%" dir=in action=allow protocol=%protocol% localport=%localPort%
+    )
 )
 netsh advfirewall firewall show rule name="%ruleName%"
 echo add %ruleName% firewall rule success!
 exit /b
-
-@REM Make sure that the default admin$ share is enabled" error in PsExec
-@REM reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v AutoShareServer /t REG_DWORD /d 1 /f
-
-echo press any key to exit...
-pause >nul
-exit
