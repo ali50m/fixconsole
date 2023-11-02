@@ -16,7 +16,7 @@ IF %ERRORLEVEL% EQU 0 (
 
 call :AddFirewallRule "xw_RDPA" "TCP" 3389
 call :AddFirewallRule "xw_TwinCAT_TCP" "TCP" 48898
-call :AddFirewallRule "xw_TwinCAT_UDP" "UDP" 48898
+call :AddFirewallRule "xw_TwinCAT_UDP" "UDP" 48899
 call :AddFirewallRule "xw_AdsWebApi" "TCP" 5240
 call :AddFirewallRule "xw_xcopy" "TCP" 445
 call :AddFirewallRule "xw_psexec_rpc" "TCP" 135
