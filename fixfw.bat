@@ -14,6 +14,9 @@ IF %ERRORLEVEL% EQU 0 (
 
 :continue
 
+@REM 加速psexec的调用 https://serverfault.com/a/805853
+netsh advfirewall firewall set rule name="Remote Service Management (RPC)" profile=private,public new enable=yes
+
 call :AddFirewallRule "xw_RDPA" "TCP" 3389
 call :AddFirewallRule "xw_TwinCAT_TCP" "TCP" 48898
 call :AddFirewallRule "xw_TwinCAT_UDP" "UDP" 48898
